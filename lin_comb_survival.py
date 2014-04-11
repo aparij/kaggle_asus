@@ -128,8 +128,6 @@ for m in modules:
             C= data_events <70
             naf = NelsonAalenFitter()
             naf.fit(data_events, event_observed=C )
-            import pdb
-            pdb.set_trace()
             y_h =  np.array(naf.cumulative_hazard_).reshape(len(naf.cumulative_hazard_))
             x= np.array(naf.cumulative_hazard_.index).astype(int)
 
@@ -139,12 +137,12 @@ for m in modules:
             if len(y_h) > 14:
                 slope, intercept, r_value, p_value, std_err = stats.linregress(x[len(x)-5:len(x)-1],y_h[len(y_h)-5:len(y_h)-1])
                 
-                plt.figure()
-                plt.plot(x, y_h, 'ko')
+                #plt.figure()
+                #plt.plot(x, y_h, 'ko')
                 #plt.plot(x, linear_f(x,slope,intercept ), 'r-')
 
-                plt.legend()
-                plt.show()
+                #plt.legend()
+                #plt.show()
 
                 total_repairs={}
 
