@@ -16,11 +16,6 @@ def conv(row):
 def conv2(row):
    return dt.strptime(row['year/month(repair)'],"%Y/%m")
 
-#def deltas(row):
-#   r= relativedelta(dt.strptime(row['repair_dt'],"%Y-%m-%d %H:%M:%S") , dt.strptime(row['sale_dt'],"%Y-%m-%d %H:%M:%S"))
-#   return r.years*12 + r.months
-
-
 def deltas(row):
    r= relativedelta(row['repair_dt'], row['sale_dt'] )
    return r.years*12 + r.months
@@ -29,7 +24,6 @@ def deltas(row):
 data = pd.read_csv('RepairTrain.csv')
 sales = pd.read_csv("SaleTrain.csv")
 out = pd.read_csv("Output_TargetID_Mapping.csv")
-
 
 
 d_grp = data.groupby(['module_category','component_category','year/month(repair)'],as_index=False).agg({'number_repair':np.sum})
@@ -59,20 +53,22 @@ for r in out.values:
         y=np.zeros(len(last_months))
         print t[-len(last_months)::].values
         for r in t[-len(last_months)::].values:
-            print r[4],"------------==\n"
             if r[4] in last_dts:
                y[last_dts.index(r[4])] = r[3]
-            #else:
-            #   y = np.append(y,0)
-            j = j + 1     
-            #x = np.append(x,j)    
-        print x,y
+            j = j + 1 
+
+            
+        plt.figure()
+        plt.plot(x, y_h, 'ko')
+        plt.show()
+
+
+            
         slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
         if np.isnan(slope):
             slope = 0
         if np.isnan(intercept):
             intercept = 0
-        print slope,intercept    
         models[m+p] = {'slope':slope,'intercept':intercept}                                
     val = int(slope*(k + len(last_months) ) + intercept )
 
@@ -82,7 +78,6 @@ for r in out.values:
        else:
           val = val - int(val/4 )  
 
-    print k, len(last_months)  , val
     if val<0:
         val=0
     k = k+1
